@@ -1,0 +1,25 @@
+{
+  "name": "nhl-games-status",
+  "version": "1.0.0",
+  "description": "nhl-games-status",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env-file -p .env.json node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwallet/nhl-games-status.git"
+  },
+  "author": "jwallet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jwallet/nhl-games-status/issues"
+  },
+  "homepage": "https://github.com/jwallet/nhl-games-status#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "cross-env-file": "^1.0.0",
+    "dotenv": "^8.2.0"
+  }
+}

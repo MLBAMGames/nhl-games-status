@@ -6,7 +6,7 @@ const app = express();
 const port = 3000;
 
 function getUtcDateToLocale(utcDate) {
-  var d = new Date(utcDate);
+  var d = new Date(utcDate || Date.now());
   return d.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 }
 
@@ -69,10 +69,11 @@ async function getGameInfoFromMLBAM(date) {
   const games = get(response.data, "dates[0].games", []);
   const [firstGame] = games;
   const gamesFirstStreamIds = games.reduce((acc, game) => {
+    if (!get(game, "gameDate")) return acc;
     var date = new Date(game.gameDate);
     if (now < date) return acc;
     const medias = get(game, "content.media.epg", []).find(
-      (m) => m.title === "NHLTV"
+      (m) => get(m, "title") === "NHLTV"
     );
     acc.push(get(medias, "items[0].mediaPlaybackId"));
     return acc;
@@ -81,12 +82,21 @@ async function getGameInfoFromMLBAM(date) {
   return {
     totalGames: games.length,
     streamIds: gamesFirstStreamIds,
-    gameDate: firstGame.gameDate,
+    gameDate: get(firstGame, "gameDate"),
   };
+}
+
+async function getStream(server, streamId, date) {
+  return await axios.get(
+    `http://${server}/getM3U8.php?league=NHL&id=${streamId}&cdn=akc&date=${date}`
+  );
 }
 
 const isStream = (stream) =>
   typeof stream === "string" && stream.includes(".m3u8");
+
+const hasQueryParam = (query, param) =>
+  query !== null && typeof query === "object" && query.hasOwnProperty(param);
 
 app.get("/", (_, res) => {
   res.sendStatus(200);
@@ -94,34 +104,29 @@ app.get("/", (_, res) => {
 
 app.get("/us/game", async (req, res) => {
   const [server] = getServers();
-  if (!server) return error(req, res);
+  if (!server) throw new Error();
 
   try {
-    const { totalGames, streamIds, gameDate } = await getGameInfoFromMLBAM(
-      req.query.date || (req.query.yesterday && getYesterday()) || getToday()
+    const { streamIds, gameDate } = await getGameInfoFromMLBAM(
+      req.query.date ||
+        (hasQueryParam(req.query, "yesterday") && getYesterday()) ||
+        getToday()
     );
-    if (totalGames === 0) throw new Error();
     const date = getUtcDateToLocale(gameDate);
     const responses = await Promise.all(
-      streamIds.map(
-        async (streamId) =>
-          await axios.get(
-            `http://${server}/getM3U8.php?league=NHL&id=${streamId}&cdn=akc&date=${date}`
-          )
-      )
+      streamIds.map((streamId) => getStream(server, streamId, date))
     );
     const streams = responses.map((r) => r.data);
     console.log(streams);
     if (streams.every(isStream)) {
-      success(req, res);
+      return success(req, res);
     } else if (streams.some(isStream)) {
-      warning(req, res);
+      return warning(req, res);
     }
     throw new Error();
   } catch {
-    error(req, res);
+    return error(req, res);
   }
-  success(req, res);
 });
 
 app.get("/us/ping", async (req, res) => {
@@ -139,23 +144,25 @@ app.get("/mlbam/ping", async (req, res) => {
       throw new Error();
     }
   } catch {
-    error(req, res);
+    return error(req, res);
   }
-  success(req, res);
+  return success(req, res);
 });
 
 app.get("/mlbam/schedule", async (req, res) => {
   try {
     const { totalGames } = await getGameInfoFromMLBAM(
-      req.query.date || getToday()
+      req.query.date ||
+        (hasQueryParam(req.query, "yesterday") && getYesterday()) ||
+        getToday()
     );
     if (totalGames === 0) {
       throw new Error();
     }
   } catch {
-    error(req, res);
+    return error(req, res);
   }
-  success(req, res);
+  return success(req, res);
 });
 
 app.listen(process.env.PORT || port, () => {

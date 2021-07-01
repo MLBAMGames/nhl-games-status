@@ -10,11 +10,6 @@ function getUtcDateToLocale(utcDate) {
   return d.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 }
 
-function getUtcToLocale(utcDate) {
-  var d = new Date(utcDate);
-  return d.toLocaleString("en-CA", { timeZone: "America/Los_Angeles" });
-}
-
 function getToday() {
   const today = new Date();
   return getUtcDateToLocale(today);
@@ -92,6 +87,15 @@ async function getStream(server, streamId, date) {
   );
 }
 
+async function getWorkingServer() {
+  const servers = getServers();
+  const results = await Promise.all(servers.map(checkUs));
+  return {
+    server: servers[results.findIndex(Boolean)],
+    isUp: results.includes(true),
+  };
+}
+
 const isStream = (stream) =>
   typeof stream === "string" && stream.includes(".m3u8");
 
@@ -103,7 +107,7 @@ app.get("/", (_, res) => {
 });
 
 app.get("/us/game", async (req, res) => {
-  const [server] = getServers();
+  const { server } = await getWorkingServer();
   if (!server) throw new Error();
 
   try {
@@ -129,10 +133,23 @@ app.get("/us/game", async (req, res) => {
   }
 });
 
+app.get("/us/badge", async (req, res) => {
+  const { isUp } = await getWorkingServer();
+  const { data: badge } = await axios.get("https://img.shields.io/static/v1", {
+    params: {
+      label: "server",
+      style: "flat-square",
+      message: isUp ? "up" : "down",
+      color: isUp ? "success" : "critical",
+    },
+  });
+  res.type("image/svg+xml");
+  res.send(badge);
+});
+
 app.get("/us/ping", async (req, res) => {
-  const servers = getServers();
-  const results = await Promise.all(servers.map(checkUs));
-  return results.includes(true) ? success(req, res) : error(req, res);
+  const { isUp } = await getWorkingServer();
+  return isUp ? success(req, res) : error(req, res);
 });
 
 app.get("/mlbam/ping", async (req, res) => {

@@ -10,3 +10,8 @@
 | NHL Games server | Today's live games streams are up     | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game)                        |
 | NHL Games server | Yesterday's live games streams are up | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game?yesterday)              |
 | NHL Games server | Archive games streams are up          | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game?date=2021-04-01)        |
+
+> You might need to refresh if no status appear in the column, the service used is kind of slow sometimes
+> 🟢 SUCCESS
+> 🟡 WARNING
+> 

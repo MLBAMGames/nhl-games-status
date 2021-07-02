@@ -14,4 +14,4 @@
 > You might need to refresh if no status appear in the column, the service used is kind of slow sometimes   
 > 🟢 SUCCESS    
 > 🟡 WARNING   
-> 🔴 FAILED    
+> 🔴 FAIL    

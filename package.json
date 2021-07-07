@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jwallet/nhl-games-status.git"
+    "url": "git+https://github.com/MLBAMGames/nhl-games-status.git"
   },
-  "author": "jwallet",
+  "author": "MLBAMGames",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jwallet/nhl-games-status/issues"
+    "url": "https://github.com/MLBAMGames/nhl-games-status/issues"
   },
-  "homepage": "https://github.com/jwallet/nhl-games-status#readme",
+  "homepage": "https://github.com/MLBAMGames/nhl-games-status#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "cross-env-file": "^1.0.0",

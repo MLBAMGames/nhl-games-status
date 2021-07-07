@@ -11,10 +11,10 @@
 | NHLTV API        | Today's schedule returns games        | ![Refresh](https://mlbam-games-status.herokuapp.com/mlbam/schedule)                 |
 | NHLTV API        | Yesterday's schedule returns games    | ![Refresh](https://mlbam-games-status.herokuapp.com/mlbam/schedule?yesterday)       |
 | NHLTV API        | Old schedule returns games            | ![Refresh](https://mlbam-games-status.herokuapp.com/mlbam/schedule?date=2021-04-01) |
-| NHL Games server | Service is up                         | ![Refresh](https://mlbam-games-status.herokuapp.com/us/ping)                        |
-| NHL Games server | Today's live games streams are up     | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game)                        |
-| NHL Games server | Yesterday's live games streams are up | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game?yesterday)              |
-| NHL Games server | Archive games streams are up          | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game?date=2021-04-01)        |
+| NHLGames server | Service is up                         | ![Refresh](https://mlbam-games-status.herokuapp.com/us/ping)                        |
+| NHLGames server | Today's live games streams are up     | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game)                        |
+| NHLGames server | Yesterday's live games streams are up | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game?yesterday)              |
+| NHLGames server | Archive games streams are up          | ![Refresh](https://mlbam-games-status.herokuapp.com/us/game?date=2021-04-01)        |
 
 > You might need to refresh if no status appear in the column, the service used is kind of slow sometimes  
 > 🟢 Success  
